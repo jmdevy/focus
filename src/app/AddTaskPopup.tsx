@@ -13,21 +13,35 @@ export interface AddTaskPopupRef{
 
 const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, ref) => {
     const [visible, setVisible] = useState<Boolean>(false);
+    const [name, setName] = useState<string>("");
     
+    const handleShow = () => {
+        setVisible(true);
+        setName("");
+    }
+
+    const handleHide = () => {
+        setVisible(false);
+    }
+
+    const handleNameChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+        setName(event.target.value);
+    }
+
     const overlayCloseClick = (event:React.MouseEvent<HTMLDivElement>) => {
         const target = event.target as HTMLElement;
         
         if(target.id == "overlay"){
-            setVisible(false);
+            handleHide()
         }
     }
 
     useImperativeHandle(ref, () => ({
         show(){
-            setVisible(true);
+            handleShow();
         },
         hide(){
-            setVisible(false);
+            handleHide();
         }
     }));
 
@@ -35,7 +49,7 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
         <div id="overlay" className={"absolute ease-linear w-full h-full flex justify-center items-center transition-all duration-150 " + (visible ? "visible bg-base-300" : "invisible opacity-0")} onClick={overlayCloseClick} style={{backgroundColor:"rgba(1.0, 1.0, 1.0, 0.65)"}}>
             <div className="w-[32rem] h-96 bg-base-300 rounded-3xl flex flex-col items-center">
                 {/* Header */}
-                <div className="w-full h-16 flex items-center ml-6">
+                <div className="w-full h-16 flex items-center ml-8">
                     <p className="font-bold text-lg">Add Task</p>
                 </div>
 
@@ -45,7 +59,7 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
                         <label className="label">
                             <span className="label-text">Name</span>
                         </label>
-                        <Input className="w-full"/>
+                        <Input type="text" placeholder="Task Name" value={name} onChange={handleNameChange} className="w-full"/>
                     </div>
                     
                     <div>
@@ -78,16 +92,16 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
                             <span className="label-text m-auto">Seconds</span>
                         </label>
 
-                        <Input type="number" className="mx-1"/>
-                        <Input type="number" className="mx-1"/>
-                        <Input type="number" className="mx-1"/>
+                        <Input type="number" defaultValue="0" min="0" max="24" step="1" className="mx-1"/>
+                        <Input type="number" defaultValue="0" min="0" max="59" step="1" className="mx-1"/>
+                        <Input type="number" defaultValue="0" min="0" max="59" step="1" className="mx-1"/>
                     </div>
                 </div>
 
                 {/* Footer */}
                 <div className="w-full h-24 flex justify-center items-center">
-                    <Button color="primary" className="mx-4" onClick={() => {setVisible(false)}}>Add</Button>
-                    <Button color="primary" className="mx-4" onClick={() => {setVisible(false)}}>Cancel</Button>
+                    <Button color="primary" className="mx-4" onClick={handleHide}>Add</Button>
+                    <Button color="primary" className="mx-4" onClick={handleHide}>Cancel</Button>
                 </div>
             </div>
         </div>
