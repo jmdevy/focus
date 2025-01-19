@@ -10,6 +10,10 @@ type AddTaskPopupDaysType = {
     [key:string]:boolean;
 }
 
+type AddTaskPopupDurationType = {
+    [key:string]:number;
+}
+
 export interface AddTaskPopupRef{
     show:() => void,
     hide:() => void
@@ -19,11 +23,13 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
     const [visible, setVisible] = useState<Boolean>(false);
     const [name, setName] = useState<string>("");
     const [days, setDays] = useState<AddTaskPopupDaysType>({"sun":false, "mon":false, "tue":false, "wed":false, "thu":false, "fri":false, "sat":false});
+    const [duration, setDuration] = useState<AddTaskPopupDurationType>({"hours":0, "minutes":0, "seconds":0});
     
     const handleShow = () => {
         setVisible(true);
         setName("");
         setDays({"sun":false, "mon":false, "tue":false, "wed":false, "thu":false, "fri":false, "sat":false});
+        setDuration({"hours":0, "minutes":0, "seconds":0});
     }
 
     const handleHide = () => {
@@ -36,9 +42,12 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
 
     const handleDayChange = (event:React.ChangeEvent<HTMLInputElement>) => {
         days[event.target.id] = event.target.checked;
-
-        // Make sure to create a new dict to cause re-render
         setDays({...days});
+    }
+
+    const handleDurationChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+        duration[event.target.id] = event.target.value;
+        setDuration({...duration});
     }
 
     const overlayCloseClick = (event:React.MouseEvent<HTMLDivElement>) => {
@@ -105,9 +114,9 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
                             <span className="label-text m-auto">Seconds</span>
                         </label>
 
-                        <Input type="number" defaultValue="0" min="0" max="24" step="1" className="mx-1"/>
-                        <Input type="number" defaultValue="0" min="0" max="59" step="1" className="mx-1"/>
-                        <Input type="number" defaultValue="0" min="0" max="59" step="1" className="mx-1"/>
+                        <Input id="hours"   value={duration["hours"]}   type="number" min="0" max="24" step="1" className="mx-1" onChange={handleDurationChange}/>
+                        <Input id="minutes" value={duration["minutes"]} type="number" min="0" max="59" step="1" className="mx-1" onChange={handleDurationChange}/>
+                        <Input id="seconds" value={duration["seconds"]} type="number" min="0" max="59" step="1" className="mx-1" onChange={handleDurationChange}/>
                     </div>
                 </div>
 
