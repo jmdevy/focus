@@ -6,6 +6,10 @@ interface AddTaskPopupProps{
     addTask:(task:Task) => void;
 }
 
+type AddTaskPopupDaysType = {
+    [key:string]:boolean;
+}
+
 export interface AddTaskPopupRef{
     show:() => void,
     hide:() => void
@@ -14,10 +18,12 @@ export interface AddTaskPopupRef{
 const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, ref) => {
     const [visible, setVisible] = useState<Boolean>(false);
     const [name, setName] = useState<string>("");
+    const [days, setDays] = useState<AddTaskPopupDaysType>({"sun":false, "mon":false, "tue":false, "wed":false, "thu":false, "fri":false, "sat":false});
     
     const handleShow = () => {
         setVisible(true);
         setName("");
+        setDays({"sun":false, "mon":false, "tue":false, "wed":false, "thu":false, "fri":false, "sat":false});
     }
 
     const handleHide = () => {
@@ -26,6 +32,13 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
 
     const handleNameChange = (event:React.ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value);
+    }
+
+    const handleDayChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+        days[event.target.id] = event.target.checked;
+
+        // Make sure to create a new dict to cause re-render
+        setDays({...days});
     }
 
     const overlayCloseClick = (event:React.MouseEvent<HTMLDivElement>) => {
@@ -59,7 +72,7 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
                         <label className="label">
                             <span className="label-text">Name</span>
                         </label>
-                        <Input type="text" placeholder="Task Name" value={name} onChange={handleNameChange} className="w-full"/>
+                        <Input type="text" placeholder="Task Name" value={name} className="w-full" onChange={handleNameChange}/>
                     </div>
                     
                     <div>
@@ -67,13 +80,13 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
                             <span className="label-text">Days</span>
                         </label>
                         <Join className="w-min h-min flex bg-error">
-                            <input type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="S"></input>
-                            <input type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="M"></input>
-                            <input type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="T"></input>
-                            <input type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="W"></input>
-                            <input type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="T"></input>
-                            <input type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="F"></input>
-                            <input type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="S"></input>
+                            <input id="sun" checked={days["sun"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="S" onChange={handleDayChange}></input>
+                            <input id="mon" checked={days["mon"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="M" onChange={handleDayChange}></input>
+                            <input id="tue" checked={days["tue"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="T" onChange={handleDayChange}></input>
+                            <input id="wed" checked={days["wed"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="W" onChange={handleDayChange}></input>
+                            <input id="thu" checked={days["thu"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="T" onChange={handleDayChange}></input>
+                            <input id="fri" checked={days["fri"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="F" onChange={handleDayChange}></input>
+                            <input id="sat" checked={days["sat"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="S" onChange={handleDayChange}></input>
                         </Join>
                     </div>
                     
