@@ -1,17 +1,9 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
-import Task from "./task";
+import Task, {TaskDuration, TaskDays, TaskDaysKeys, TaskDurationKeys} from "./task";
 import { Button, Checkbox, Input, Join } from "react-daisyui";
 
 interface AddTaskPopupProps{
     addTask:(task:Task) => void;
-}
-
-type AddTaskPopupDaysType = {
-    [key:string]:boolean;
-}
-
-type AddTaskPopupDurationType = {
-    [key:string]:number;
 }
 
 export interface AddTaskPopupRef{
@@ -20,18 +12,24 @@ export interface AddTaskPopupRef{
 }
 
 const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, ref) => {
+    const nameDefault = ""
+    const daysDefault:TaskDays = {sun:false, mon:false, tue:false, wed:false, thu:false, fri:false, sat:false};
+    const durationDefault:TaskDuration = {hours:0, minutes:0, seconds:0};
+
     const [visible, setVisible] = useState<Boolean>(false);
-    const [name, setName] = useState<string>("");
-    const [days, setDays] = useState<AddTaskPopupDaysType>({"sun":false, "mon":false, "tue":false, "wed":false, "thu":false, "fri":false, "sat":false});
-    const [duration, setDuration] = useState<AddTaskPopupDurationType>({"hours":0, "minutes":0, "seconds":0});
+    const [name, setName] = useState<string>(nameDefault);
+    const [days, setDays] = useState<TaskDays>(daysDefault);
+    const [duration, setDuration] = useState<TaskDuration>(durationDefault);
     
+    // Called to show this modal. Resets all inputs
     const handleShow = () => {
         setVisible(true);
-        setName("");
-        setDays({"sun":false, "mon":false, "tue":false, "wed":false, "thu":false, "fri":false, "sat":false});
-        setDuration({"hours":0, "minutes":0, "seconds":0});
+        setName(nameDefault);
+        setDays(daysDefault);
+        setDuration(durationDefault);
     }
 
+    // Called to hide this modal
     const handleHide = () => {
         setVisible(false);
     }
@@ -41,17 +39,30 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
     }
 
     const handleDayChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-        days[event.target.id] = event.target.checked;
+        const target = event.target as HTMLInputElement;
+        const id = target.id as TaskDaysKeys;
+        const day:TaskDaysKeys = id;
+
+        days[day] = target.checked;
         setDays({...days});
     }
 
     const handleDurationChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-        duration[event.target.id] = event.target.value;
+        const target = event.target as HTMLInputElement;
+        const id = target.id as TaskDurationKeys;
+        const time:TaskDurationKeys = id;
+
+        duration[time] = target.value;
         setDuration({...duration});
     }
 
+    const handleAddTaskClick = (event:React.MouseEvent<HTMLButtonElement>) => {
+        addTask(new Task(name, duration, days, false));
+        handleHide();
+    }
+
     const overlayCloseClick = (event:React.MouseEvent<HTMLDivElement>) => {
-        const target = event.target as HTMLElement;
+        const target = event.target as HTMLDivElement;
         
         if(target.id == "overlay"){
             handleHide()
@@ -89,13 +100,13 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
                             <span className="label-text">Days</span>
                         </label>
                         <Join className="w-min h-min flex bg-error">
-                            <input id="sun" checked={days["sun"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="S" onChange={handleDayChange}></input>
-                            <input id="mon" checked={days["mon"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="M" onChange={handleDayChange}></input>
-                            <input id="tue" checked={days["tue"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="T" onChange={handleDayChange}></input>
-                            <input id="wed" checked={days["wed"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="W" onChange={handleDayChange}></input>
-                            <input id="thu" checked={days["thu"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="T" onChange={handleDayChange}></input>
-                            <input id="fri" checked={days["fri"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="F" onChange={handleDayChange}></input>
-                            <input id="sat" checked={days["sat"]} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="S" onChange={handleDayChange}></input>
+                            <input id="sun" checked={days.sun} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="S" onChange={handleDayChange}></input>
+                            <input id="mon" checked={days.mon} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="M" onChange={handleDayChange}></input>
+                            <input id="tue" checked={days.tue} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="T" onChange={handleDayChange}></input>
+                            <input id="wed" checked={days.wed} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="W" onChange={handleDayChange}></input>
+                            <input id="thu" checked={days.thu} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="T" onChange={handleDayChange}></input>
+                            <input id="fri" checked={days.fri} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="F" onChange={handleDayChange}></input>
+                            <input id="sat" checked={days.sat} type="checkbox" className="join-item btn w-full rounded-none flex-1" aria-label="S" onChange={handleDayChange}></input>
                         </Join>
                     </div>
                     
@@ -122,7 +133,7 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
 
                 {/* Footer */}
                 <div className="w-full h-24 flex justify-center items-center">
-                    <Button color="primary" className="mx-4" onClick={handleHide}>Add</Button>
+                    <Button color="primary" className="mx-4" onClick={handleAddTaskClick}>Add</Button>
                     <Button color="primary" className="mx-4" onClick={handleHide}>Cancel</Button>
                 </div>
             </div>

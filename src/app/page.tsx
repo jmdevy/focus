@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { Button, Theme, Join } from "react-daisyui";
 import Task from "./task";
 import AddTaskPopup, {AddTaskPopupRef} from "./AddTaskPopup";
+import TaskWidget from "./TaskWidget";
 
 
 export default function Home() {
@@ -18,12 +19,21 @@ export default function Home() {
 		modalRef.current?.show();
 	}
 
+	const renderTasks = (): ReactNode[] => {
+		return tasks.map((task:Task, index:number) => {
+			return(
+				<TaskWidget key={index}/>
+			)
+		});
+	}
+
 	return (
 		<Theme dataTheme="coffee" className="h-screen flex">
 			<AddTaskPopup addTask={addTask} ref={modalRef}/>
 
 			<div className="w-full mx-auto max-w-96 flex flex-col">
-			
+		
+
 				{/* Button header */}
 				<div className="w-full h-12 flex flex-row mt-4">
 					<div className="h-full flex-1 flex items-center">
@@ -39,8 +49,8 @@ export default function Home() {
 				</div>
 
 				{/* Main task list */}
-				<div className="w-full h-full bg-base-200 rounded rounded-3xl my-4">
-					
+				<div className="w-full h-full bg-base-200 rounded rounded-3xl my-4 overflow-y-auto" style={{scrollbarWidth:"thin"}}>
+					{renderTasks()}
 				</div>
 
 			</div>
