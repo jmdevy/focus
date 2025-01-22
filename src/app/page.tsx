@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import { Button, Theme, Join } from "react-daisyui";
 import Task from "./task";
 import AddTaskPopup, {AddTaskPopupRef} from "./AddTaskPopup";
@@ -15,14 +15,14 @@ export default function Home() {
 		setTasks([...tasks, task]);
 	}
 
-	const addTaskClick = (event:React.MouseEvent<HTMLButtonElement>) => {
+	const addTaskClick = () => {
 		modalRef.current?.show();
 	}
 
 	const renderTasks = (): ReactNode[] => {
 		return tasks.map((task:Task, index:number) => {
 			return(
-				<TaskWidget key={index}/>
+				<TaskWidget key={index} task={task}/>
 			)
 		});
 	}

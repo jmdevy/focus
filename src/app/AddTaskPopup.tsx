@@ -1,6 +1,6 @@
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import Task, {TaskDuration, TaskDays, TaskDaysKeys, TaskDurationKeys} from "./task";
-import { Button, Checkbox, Input, Join } from "react-daisyui";
+import { Button, Input, Join } from "react-daisyui";
 
 interface AddTaskPopupProps{
     addTask:(task:Task) => void;
@@ -16,7 +16,7 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
     const daysDefault:TaskDays = {sun:false, mon:false, tue:false, wed:false, thu:false, fri:false, sat:false};
     const durationDefault:TaskDuration = {hours:0, minutes:0, seconds:0};
 
-    const [visible, setVisible] = useState<Boolean>(false);
+    const [visible, setVisible] = useState<boolean>(false);
     const [name, setName] = useState<string>(nameDefault);
     const [days, setDays] = useState<TaskDays>(daysDefault);
     const [duration, setDuration] = useState<TaskDuration>(durationDefault);
@@ -39,24 +39,24 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
     }
 
     const handleDayChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-        const target = event.target as HTMLInputElement;
-        const id = target.id as TaskDaysKeys;
-        const day:TaskDaysKeys = id;
+        const target:HTMLInputElement = event.target as HTMLInputElement;
+        const id:TaskDaysKeys         = target.id as TaskDaysKeys;
+        const day:TaskDaysKeys        = id;
 
         days[day] = target.checked;
         setDays({...days});
     }
 
     const handleDurationChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-        const target = event.target as HTMLInputElement;
-        const id = target.id as TaskDurationKeys;
-        const time:TaskDurationKeys = id;
+        const target:HTMLInputElement = event.target as HTMLInputElement;
+        const id:TaskDurationKeys     = target.id as TaskDurationKeys;
+        const time:TaskDurationKeys   = id;
 
-        duration[time] = target.value;
+        duration[time] = parseInt(target.value);
         setDuration({...duration});
     }
 
-    const handleAddTaskClick = (event:React.MouseEvent<HTMLButtonElement>) => {
+    const handleAddTaskClick = () => {
         addTask(new Task(name, duration, days, false));
         handleHide();
     }
@@ -140,5 +140,6 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask}, 
         </div>
     );
 });
+AddTaskPopup.displayName = "AddTaskPopup";
 
 export default AddTaskPopup;

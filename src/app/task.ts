@@ -14,7 +14,7 @@ export interface TaskDays {
     sat:boolean
 }
 
-export type TaskDurationKeys = keyof TaskDays;
+export type TaskDurationKeys = keyof TaskDuration;
 export type TaskDaysKeys = keyof TaskDays;
 
 export default class Task{
