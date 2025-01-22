@@ -54,6 +54,8 @@ export default function Home() {
 				</div>
 
 			</div>
+
+			<p className="absolute bottom-2 right-2 opacity-25 text-sm">DRAFT (1/22/2025): 0.0.1</p>
 		</Theme>
 	);
 }
