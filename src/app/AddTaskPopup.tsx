@@ -49,8 +49,8 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask, s
 
         // Check that at least one day is checked, otherwise, error
         let oneDayChecked = false;
-        for (const [key, value] of Object.entries(days)) {
-            if(value == true){
+        for(const [key, value] of Object.entries(days)){
+            if(key && value){
                 oneDayChecked = true;
                 break;
             }
