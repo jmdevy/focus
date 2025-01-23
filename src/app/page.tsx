@@ -11,8 +11,19 @@ export default function Home() {
 	const [tasks, setTasks] = useState<Task[]>([]);
 	const modalRef = useRef<AddTaskPopupRef>(null);
 
+	// Add task to task list
 	const addTask = (task:Task) => {
 		setTasks([...tasks, task]);
+	}
+
+	// Search to see if a task already exists
+	const searchTask = (name:string):boolean => {
+		for(let i=0; i<tasks.length; i++){
+			if(tasks[i].name == name){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	const addTaskClick = () => {
@@ -28,8 +39,8 @@ export default function Home() {
 	}
 
 	return (
-		<Theme dataTheme="coffee" className="h-screen flex">
-			<AddTaskPopup addTask={addTask} ref={modalRef}/>
+		<Theme dataTheme="coffee" className="absolute top-0 bottom-0 left-0 right-0 flex overflow-hidden">
+			<AddTaskPopup addTask={addTask} searchTask={searchTask} ref={modalRef}/>
 
 			<div className="w-full mx-auto max-w-96 flex flex-col">
 		
