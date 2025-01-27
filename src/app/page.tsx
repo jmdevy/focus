@@ -6,7 +6,7 @@ import Task from "./task";
 import AddTaskPopup, {AddTaskPopupRef} from "./AddTaskPopup";
 import TaskWidget from "./TaskWidget";
 
-export enum Filter {
+enum Filter {
 	TODO=0,
 	DONE=1,
 	ALL=2
