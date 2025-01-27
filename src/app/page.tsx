@@ -6,9 +6,15 @@ import Task from "./task";
 import AddTaskPopup, {AddTaskPopupRef} from "./AddTaskPopup";
 import TaskWidget from "./TaskWidget";
 
+export enum Filter {
+	TODO=0,
+	DONE=1,
+	ALL=2
+}
 
 export default function Home() {
 	const [tasks, setTasks] = useState<Task[]>([]);
+	const [filter, setFilter] = useState<Filter>(Filter.TODO);
 	const modalRef = useRef<AddTaskPopupRef>(null);
 
 	// Add task to task list
@@ -32,9 +38,12 @@ export default function Home() {
 
 	const renderTasks = (): ReactNode[] => {
 		return tasks.map((task:Task, index:number) => {
-			return(
-				<TaskWidget key={index} task={task}/>
-			)
+			if((!task.completed && (filter == Filter.TODO || filter == Filter.ALL)) ||
+				 task.completed && filter == Filter.DONE){
+				return(
+					<TaskWidget key={index} task={task}/>
+				)
+			}
 		});
 	}
 
@@ -52,9 +61,9 @@ export default function Home() {
 					</div>
 					<div className="h-full flex-1 flex items-center">
 						<Join>
-							<input className="join-item btn flex-1" type="radio" name="options" aria-label="TODO" defaultChecked/>
-							<input className="join-item btn flex-1" type="radio" name="options" aria-label="DONE" />
-							<input className="join-item btn flex-1" type="radio" name="options" aria-label="ALL" />
+							<input onClick={() => {setFilter(Filter.TODO)}} className="join-item btn flex-1" type="radio" name="options" aria-label="TODO" defaultChecked/>
+							<input onClick={() => {setFilter(Filter.DONE)}} className="join-item btn flex-1" type="radio" name="options" aria-label="DONE" />
+							<input onClick={() => {setFilter(Filter.ALL)}}  className="join-item btn flex-1" type="radio" name="options" aria-label="ALL" />
 						</Join>
 					</div>
 				</div>
@@ -66,7 +75,7 @@ export default function Home() {
 
 			</div>
 
-			<p className="absolute bottom-2 right-2 opacity-25 text-sm">DRAFT (1/22/2025): 0.0.1</p>
+			<p className="absolute bottom-2 right-2 opacity-25 text-sm">DRAFT (1/26/2025): 0.0.1</p>
 		</Theme>
 	);
 }

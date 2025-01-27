@@ -117,7 +117,7 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask, s
             return;
         }
 
-        addTask(new Task(name, duration, days, false));
+        addTask(new Task(name, duration, days));
         handleHide();
     }
 
@@ -139,7 +139,7 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask, s
     }));
 
     return(
-        <div id="overlay" className={"z-10 absolute ease-linear w-full h-full flex justify-center items-center transition-all duration-150 " + (visible ? "visible bg-base-300" : "invisible opacity-0")} onClick={overlayCloseClick} style={{backgroundColor:"rgba(1.0, 1.0, 1.0, 0.65)"}}>
+        <div id="overlay" className={"z-[2000] absolute ease-linear w-full h-full flex justify-center items-center transition-all duration-150 " + (visible ? "visible bg-base-300" : "invisible opacity-0")} onClick={overlayCloseClick} style={{backgroundColor:"rgba(1.0, 1.0, 1.0, 0.65)"}}>
             <div className="w-[32rem] h-96 bg-base-300 rounded-3xl flex flex-col items-center">
                 {/* Header */}
                 <div className="w-full h-16 flex items-center ml-8">
