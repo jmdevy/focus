@@ -1,15 +1,12 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
-import { Button, Toast, Alert } from "react-daisyui";
+import { Toast, Alert } from "react-daisyui";
 
-interface AlertProps{
-    
-}
 
 export interface AlertRef{
     show:(message:string) => void,
 }
 
-const AlertPopup = forwardRef<AlertRef, AlertProps>(({}, ref) => {
+const AlertPopup = forwardRef<AlertRef>((_, ref) => {
     
     const [message, setMessage] = useState<string>("");
 

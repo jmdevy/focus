@@ -56,7 +56,7 @@ const TaskWidget: React.FC<TaskWidgetProps> = ({task, taskCompleteUpdate}) => {
 
     useEffect(() => {
         setDuration(task.durationToStr(task.currentDuration));
-    }, [])
+    }, [task])
 
     return (
         <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className="grid grid-rows-8 grid-cols-8 bg-base-300 aspect-square m-10 p-4 rounded-3xl outline outline-1 outline-base-100 hover:outline-secondary ease-linear transition-all duration-75">
