@@ -26,6 +26,7 @@ export default class Task{
     lastTickTimerID:number;
     completed:boolean;
     tickCB:() => void;
+    completeCB:() => void;
 
     constructor(name:string, totalDuration:TaskDuration, days:TaskDays){
         this.name = name;
@@ -36,6 +37,7 @@ export default class Task{
         this.lastTickTimerID = 0;
         this.completed = false;
         this.tickCB = () => {};
+        this.completeCB = () => {};
     }
 
     // Returns duration as a string
@@ -84,8 +86,13 @@ export default class Task{
         }else if(this.currentDuration.hours != 0){
             this.currentDuration.minutes = 59;
             this.currentDuration.hours -= 1;
-        }else{
+        }
+
+        if(this.currentDuration.seconds == 0 &&
+           this.currentDuration.minutes == 0 &&
+           this.currentDuration.hours == 0){
             this.completed = true;
+            this.completeCB();
             this.stop();
         }
 
@@ -94,8 +101,9 @@ export default class Task{
     }
 
     // Starts timer countdown and tick CB
-    start(tickCB:() => void):void{
+    start(tickCB:() => void, completeCB:() => void):void{
         this.tickCB = tickCB;
+        this.completeCB = completeCB;
 
         // Call the tickCB right away to give a response right away
         this.started = true;
@@ -113,14 +121,15 @@ export default class Task{
             window.clearTimeout(this.lastTickTimerID);
             this.started = false;
             this.tickCB = () => {};
+            this.completeCB = () => {};
         }
     }
 
-    toggle(tickCB:() => void):void{
+    toggle(tickCB:() => void, completeCB:() => void):void{
         if(this.started){
             this.stop();
         }else{
-            this.start(tickCB);
+            this.start(tickCB, completeCB);
         }
     }
 }
