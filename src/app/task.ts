@@ -78,23 +78,26 @@ export default class Task{
     }
 
     tick():void{
-        if(this.currentDuration.seconds != 0){
-            this.currentDuration.seconds -= 1;
-        }else if(this.currentDuration.minutes != 0){
-            this.currentDuration.seconds = 59;
+        if(this.currentDuration.seconds == 0 &&
+            this.currentDuration.minutes == 0 &&
+            this.currentDuration.hours == 0){
+             this.completed = true;
+             this.completeCB();
+             this.stop();
+             return;
+         }
+
+        if(this.currentDuration.seconds < 0){
             this.currentDuration.minutes -= 1;
-        }else if(this.currentDuration.hours != 0){
-            this.currentDuration.minutes = 59;
-            this.currentDuration.hours -= 1;
+            this.currentDuration.seconds = 59;
         }
 
-        if(this.currentDuration.seconds == 0 &&
-           this.currentDuration.minutes == 0 &&
-           this.currentDuration.hours == 0){
-            this.completed = true;
-            this.completeCB();
-            this.stop();
+        if(this.currentDuration.minutes < 0){
+            this.currentDuration.hours -= 1;
+            this.currentDuration.minutes = 59;
         }
+
+        this.currentDuration.seconds -= 1;
 
         // Invoke tick callback and call parent function again
         this.tickCB();

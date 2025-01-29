@@ -17,7 +17,6 @@ const AlertPopup = forwardRef<AlertRef>((_, ref) => {
             // After some time, remove the message so the alert disappears
             setTimeout(() => {
                 setMessage("");
-                console.log("Hide");
             }, 4000);
         },
     }));
