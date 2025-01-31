@@ -2,10 +2,11 @@
 
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { Button, Theme, Join } from "react-daisyui";
-import Task from "./task";
-import AddTaskPopup, {AddTaskPopupRef} from "./AddTaskPopup";
-import TaskWidget from "./TaskWidget";
-import AlertPopup, {AlertRef} from "./AlertPopup";
+import Task from "./ts/utils/task";
+import AddTaskPopup, {AddTaskPopupRef} from "./components/AddTaskPopup";
+import TaskWidget from "./components/TaskWidget";
+import AlertPopup, {AlertRef} from "./components/AlertPopup";
+import { saveTasks, restoreTasks } from "./ts/utils/storage";
 
 enum Filter {
 	TODO=0,
@@ -25,10 +26,23 @@ export default function Home() {
 		setTasks([...tasks, task]);
 	}
 
+	// Remove a task
+	const delTask = (task:Task) => {
+		const nonDeletedTasks = [];
+
+		for(let i=0; i<tasks.length; i++){
+			if(tasks[i].info.name != task.info.name){
+				nonDeletedTasks.push(tasks[i]);
+			}
+		}
+
+		setTasks(nonDeletedTasks);
+	}
+
 	// Search to see if a task already exists
 	const searchTask = (name:string):boolean => {
 		for(let i=0; i<tasks.length; i++){
-			if(tasks[i].name == name){
+			if(tasks[i].info.name == name){
 				return true;
 			}
 		}
@@ -39,9 +53,9 @@ export default function Home() {
 		let count:number = 0;
 
 		for(let i=0; i<tasks.length; i++){
-			if(filter == Filter.TODO && !tasks[i].completed){
+			if(filter == Filter.TODO && !tasks[i].info.completed){
 				count++;
-			}else if(filter == Filter.DONE && tasks[i].completed){
+			}else if(filter == Filter.DONE && tasks[i].info.completed){
 				count++
 			}else if(filter == Filter.ALL){
 				count++;
@@ -56,25 +70,32 @@ export default function Home() {
 	}
 
 	// Called by any task that completes so that count can be updated
-	const taskCompleteUpdate = (taskName:string):void => {
+	const updateTaskCount = (taskName:string):void => {
 		setCount(getTaskCount(filter));
 		alertRef.current?.show("Great job! Task '" + taskName + "' complete!");
 	}
 
 	const renderTasks = ():ReactNode[] => {
 		return tasks.map((task:Task, index:number) => {
-			if((!task.completed && (filter == Filter.TODO || filter == Filter.ALL)) ||
-				 task.completed && (filter == Filter.DONE || filter == Filter.ALL)){
+			if((!task.info.completed && (filter == Filter.TODO || filter == Filter.ALL)) ||
+				 task.info.completed && (filter == Filter.DONE || filter == Filter.ALL)){
 				return(
-					<TaskWidget key={index} task={task} taskCompleteUpdate={taskCompleteUpdate}/>
+					<TaskWidget key={index} task={task} updateTaskCount={updateTaskCount} delTask={delTask}/>
 				)
 			}
 		});
 	}
 
+	// On component startup, restore tasks if
+	// saved in browser local storage/cookie
+	useEffect(() => {
+		restoreTasks(setTasks);
+	}, []);
+
 	// Update when `tasks` or `filter` changes
 	useEffect(() => {
 		setCount(getTaskCount(filter));
+		saveTasks(tasks);
 	}, [tasks, filter]);
 
 	return (
@@ -107,7 +128,7 @@ export default function Home() {
 
 			</div>
 
-			<p className="absolute bottom-2 right-2 opacity-25 text-sm">DRAFT (1/27/2025): 0.0.1</p>
+			<p className="absolute bottom-2 right-2 opacity-25 text-sm">DRAFT (1/30/2025): 0.0.1</p>
 		</Theme>
 	);
 }

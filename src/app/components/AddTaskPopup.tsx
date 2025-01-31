@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
-import Task, {TaskDuration, TaskDays, TaskDaysKeys, TaskDurationKeys} from "./task";
+import Task, {TaskDuration, TaskDays, TaskDaysKeys, TaskDurationKeys, TaskInfo} from "../ts/utils/task";
 import { Button, Input, Join } from "react-daisyui";
 
 interface AddTaskPopupProps{
@@ -117,7 +117,17 @@ const AddTaskPopup = forwardRef<AddTaskPopupRef, AddTaskPopupProps>(({addTask, s
             return;
         }
 
-        addTask(new Task(name, duration, days));
+        const newTaskInfo:TaskInfo = {
+            name:name,
+            totalDuration:duration,
+            currentDuration:{hours:duration.hours, minutes:duration.minutes, seconds:duration.seconds},
+            days:days,
+            started:false,
+            lastTickTimerID:0,
+            completed:false
+        }
+
+        addTask(new Task(newTaskInfo));
         handleHide();
     }
 
