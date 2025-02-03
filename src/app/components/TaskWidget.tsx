@@ -8,9 +8,10 @@ interface TaskWidgetProps{
     task:Task;
     updateTaskCount:(taskName:string) => void;
     delTask:(task:Task) => void;
+    saveAllTasks:() => void;
 }
 
-const TaskWidget: React.FC<TaskWidgetProps> = ({task, updateTaskCount, delTask}) => {
+const TaskWidget: React.FC<TaskWidgetProps> = ({task, updateTaskCount, delTask, saveAllTasks}) => {
 
     const [complete, setComplete] = useState<boolean>(false);
     const [started, setStarted] = useState<boolean>(false);
@@ -57,6 +58,17 @@ const TaskWidget: React.FC<TaskWidgetProps> = ({task, updateTaskCount, delTask})
         }
     }
 
+    const start = () => {
+        if(started){
+            setStarted(false);
+            task.toggle(taskTick, taskComplete);
+        }else{
+            setStarted(true);
+            setComplete(false);
+            task.toggle(taskTick, taskComplete);
+        }
+    }
+
     useEffect(() => {
         setComplete(task.info.completed);
         setStarted(false);
@@ -89,7 +101,7 @@ const TaskWidget: React.FC<TaskWidgetProps> = ({task, updateTaskCount, delTask})
                 <div className="w-min h-min flex flex-wrap justify-center">
                     <span className="select-none">{duration}</span>
                     <div className="basis-full h-0"></div>
-                    <Button size="md" shape="square" className="z-[1000]" onClick={() => {setStarted(true); setComplete(false); task.toggle(taskTick, taskComplete)}}>
+                    <Button size="md" shape="square" className="z-[1000]" onClick={start} disabled={complete}>
                         {getButtonSymbol()}
                     </Button>
                 </div>

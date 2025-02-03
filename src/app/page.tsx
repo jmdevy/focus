@@ -69,11 +69,15 @@ export default function Home() {
 		addTaskRef.current?.show();
 	}
 
+	const saveAllTasks = ():void => {
+		saveTasks(tasks);
+	}
+
 	// Called by any task that completes so that count can be updated
 	const updateTaskCount = (taskName:string):void => {
 		setCount(getTaskCount(filter));
 		alertRef.current?.show("Great job! Task '" + taskName + "' complete!");
-		saveTasks(tasks);
+		saveAllTasks();
 	}
 
 	const renderTasks = ():ReactNode[] => {
@@ -81,7 +85,7 @@ export default function Home() {
 			if((!task.info.completed && (filter == Filter.TODO || filter == Filter.ALL) && task.forToday()) ||
 				((task.info.completed || !task.forToday()) && (filter == Filter.DONE || filter == Filter.ALL))){
 				return(
-					<TaskWidget key={index} task={task} updateTaskCount={updateTaskCount} delTask={delTask}/>
+					<TaskWidget key={index} task={task} updateTaskCount={updateTaskCount} delTask={delTask} saveAllTasks={saveAllTasks}/>
 				)
 			}
 		});
@@ -96,7 +100,7 @@ export default function Home() {
 	// Update when `tasks` or `filter` changes
 	useEffect(() => {
 		setCount(getTaskCount(filter));
-		saveTasks(tasks);
+		saveAllTasks();
 	}, [tasks, filter]);
 
 	return (
@@ -128,8 +132,6 @@ export default function Home() {
 				</div>
 
 			</div>
-
-			<p className="absolute bottom-2 right-2 opacity-25 text-sm">DRAFT (2/2/2025): 0.0.1</p>
 		</Theme>
 	);
 }
