@@ -9,7 +9,7 @@ You can read a detailed blog post of the web app [here](https://jmdevy.github.io
 2. visit `http://localhost:3000/`
 
 ## Deploying
-Thanks to GitHub pages, this project is automatically built and published on Github. However, to build this application locally, run: `npm run build`
+Thanks to GitHub pages and actions, this project is automatically built and published on Github. However, to build this application locally, run: `npm run build`
 
 ## Version Scheme
 The version number in the bottom right of this web app has the following format: `major.minor.patch`

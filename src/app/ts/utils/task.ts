@@ -34,15 +34,6 @@ export default class Task{
 
     constructor(info:TaskInfo){
         this.info = info;
-        // {
-        //     name:name,
-        //     totalDuration:totalDuration,
-        //     currentDuration:{hours:totalDuration.hours, minutes:totalDuration.minutes, seconds:totalDuration.seconds},
-        //     days:days,
-        //     started:false,
-        //     lastTickTimerID:0,
-        //     completed:false
-        // }
 
         this.tickCB = () => {};
         this.updateCountCB = () => {};
@@ -74,6 +65,31 @@ export default class Task{
         formatted = formatted.slice(0, formatted.length-1);
 
         return formatted;
+    }
+
+    // Returns `true` if this task should
+    // be done this day of the week
+    forToday():boolean{
+        const today:Date = new Date();
+        const day:number = today.getDay();
+
+        for(const [key, value] of Object.entries(this.info.days)){
+            if(!value){
+                continue;
+            }
+
+            if((key == "sun" && day == 0) ||
+               (key == "mon" && day == 1) ||
+               (key == "tue" && day == 2) ||
+               (key == "wed" && day == 3) ||
+               (key == "thu" && day == 4) ||
+               (key == "fri" && day == 5) ||
+               (key == "sat" && day == 6)){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     #durationToSec(duration:TaskDuration):number{
@@ -118,6 +134,7 @@ export default class Task{
         this.updateCountCB = updateCountCB;
 
         // Call the tickCB right away to give a response right away
+        this.info.completed = false;
         this.info.started = true;
         this.tickCB();
 

@@ -53,9 +53,9 @@ export default function Home() {
 		let count:number = 0;
 
 		for(let i=0; i<tasks.length; i++){
-			if(filter == Filter.TODO && !tasks[i].info.completed){
+			if(filter == Filter.TODO && !tasks[i].info.completed && tasks[i].forToday()){
 				count++;
-			}else if(filter == Filter.DONE && tasks[i].info.completed){
+			}else if(filter == Filter.DONE && (tasks[i].info.completed || !tasks[i].forToday())){
 				count++
 			}else if(filter == Filter.ALL){
 				count++;
@@ -73,12 +73,13 @@ export default function Home() {
 	const updateTaskCount = (taskName:string):void => {
 		setCount(getTaskCount(filter));
 		alertRef.current?.show("Great job! Task '" + taskName + "' complete!");
+		saveTasks(tasks);
 	}
 
 	const renderTasks = ():ReactNode[] => {
 		return tasks.map((task:Task, index:number) => {
-			if((!task.info.completed && (filter == Filter.TODO || filter == Filter.ALL)) ||
-				 task.info.completed && (filter == Filter.DONE || filter == Filter.ALL)){
+			if((!task.info.completed && (filter == Filter.TODO || filter == Filter.ALL) && task.forToday()) ||
+				((task.info.completed || !task.forToday()) && (filter == Filter.DONE || filter == Filter.ALL))){
 				return(
 					<TaskWidget key={index} task={task} updateTaskCount={updateTaskCount} delTask={delTask}/>
 				)
@@ -128,7 +129,7 @@ export default function Home() {
 
 			</div>
 
-			<p className="absolute bottom-2 right-2 opacity-25 text-sm">DRAFT (1/30/2025): 0.0.1</p>
+			<p className="absolute bottom-2 right-2 opacity-25 text-sm">DRAFT (2/2/2025): 0.0.1</p>
 		</Theme>
 	);
 }
