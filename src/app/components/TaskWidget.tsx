@@ -8,10 +8,9 @@ interface TaskWidgetProps{
     task:Task;
     updateTaskCount:(taskName:string) => void;
     delTask:(task:Task) => void;
-    saveAllTasks:() => void;
 }
 
-const TaskWidget: React.FC<TaskWidgetProps> = ({task, updateTaskCount, delTask, saveAllTasks}) => {
+const TaskWidget: React.FC<TaskWidgetProps> = ({task, updateTaskCount, delTask}) => {
 
     const [complete, setComplete] = useState<boolean>(false);
     const [started, setStarted] = useState<boolean>(false);

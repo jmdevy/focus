@@ -85,7 +85,7 @@ export default function Home() {
 			if((!task.info.completed && (filter == Filter.TODO || filter == Filter.ALL) && task.forToday()) ||
 				((task.info.completed || !task.forToday()) && (filter == Filter.DONE || filter == Filter.ALL))){
 				return(
-					<TaskWidget key={index} task={task} updateTaskCount={updateTaskCount} delTask={delTask} saveAllTasks={saveAllTasks}/>
+					<TaskWidget key={index} task={task} updateTaskCount={updateTaskCount} delTask={delTask}/>
 				)
 			}
 		});
